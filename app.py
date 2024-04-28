@@ -142,7 +142,7 @@ def vid():
 
             # Display the highlighted sentence, predicted class, and class probabilities
             sentenceCheck = highlight(user_input)
-            prediction_result = f"Predicted class: {class_id_to_label[torch.argmax(logits).item()]}"
+            prediction_result = f" {class_id_to_label[torch.argmax(logits).item()]}"
             return render_template('vid.html', sentenceCheck=highlight(user_input), prediction_result=prediction_result, class_probabilities=class_probabilities)
         elif 'feedback' in request.form:
             suggested_class=request.form['feedback']
@@ -178,7 +178,7 @@ def audio():
 
             # Display the highlighted sentence, predicted class, and class probabilities
             sentenceCheck = highlight(user_input)
-            prediction_result = f"Predicted class: {class_id_to_label[torch.argmax(logits).item()]}"
+            prediction_result = f" {class_id_to_label[torch.argmax(logits).item()]}"
             return render_template('audio.html', sentenceCheck=highlight(user_input), prediction_result=prediction_result, class_probabilities=class_probabilities)
         elif 'feedback' in request.form:
             suggested_class=request.form['feedback']
