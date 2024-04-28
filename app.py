@@ -127,8 +127,8 @@ def text():
 def vid():
     if request.method == 'POST':
         user_input = request.form['user_input']
-        user_input = video_transcription(user_input)
         if 'predict' in request.form:
+            user_input = video_transcription(user_input)
             # Tokenize the user input using bert_tokenizer
             test_inputs, test_masks = bert_tokenizer([user_input])
 
@@ -163,8 +163,8 @@ def vid():
 def audio():
     if request.method == 'POST':
         user_input = request.files['user_input']
-        user_input = audio_transcription(user_input)
         if 'predict' in request.form:
+            user_input = audio_transcription(user_input)
             # Tokenize the user input using bert_tokenizer
             test_inputs, test_masks = bert_tokenizer([user_input])
 
