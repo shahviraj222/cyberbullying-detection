@@ -11,8 +11,8 @@ from nltk.corpus import stopwords
 import torch.nn as nn
 from transformers import BertModel, BertTokenizer
 import csv
-import soundfile as sf
 import numpy as np
+import time
 
 app = Flask(__name__)
 app.secret_key = 'KeySoUniquYouWontGuessIt'
@@ -162,8 +162,8 @@ def vid():
 @app.route('/audio', methods=['GET', 'POST'])
 def audio():
     if request.method == 'POST':
-        user_input = request.files['user_input']
         if 'predict' in request.form:
+            user_input = request.files['user_input']
             user_input = audio_transcription(user_input)
             # Tokenize the user input using bert_tokenizer
             test_inputs, test_masks = bert_tokenizer([user_input])
@@ -183,6 +183,7 @@ def audio():
             prediction_result = f" {class_id_to_label[torch.argmax(logits).item()]}"
             return render_template('audio.html', sentenceCheck=highlight(user_input), prediction_result=prediction_result, class_probabilities=class_probabilities)
         elif 'feedback' in request.form:
+            user_input = request.form['user_input']
             suggested_class=request.form['feedback']
             user_input=user_input.replace('<span style="color:red; font-style: italic;">','')
             user_input=user_input.replace('</span>','')
@@ -205,22 +206,17 @@ def video_transcription(video_URL):
     audio_file = audio.download()
 
     result = whisper_model.transcribe(audio_file)
-
     # Delete audio file after transcription
     os.remove(audio_file)
 
     return result["text"]
 
 def audio_transcription(audio_file):
-    with audio_file as f:
-        audio_data, sample_rate = sf.read(f)
-
-    if not isinstance(audio_data, np.ndarray):
-        audio_data = np.array(audio_data)
-    
-    result = whisper_model.transcribe(audio_data, sample_rate)
+    audio_file.save('audio.mp3')
+    result = whisper_model.transcribe('audio.mp3')
     # Delete audio file after transcription
-    # os.remove(audio_file)
+    os.remove('audio.mp3')
+
     return result["text"]
 
 if __name__ == '__main__':
