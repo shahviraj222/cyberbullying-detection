@@ -11,6 +11,8 @@ from nltk.corpus import stopwords
 import torch.nn as nn
 from transformers import BertModel, BertTokenizer
 import csv
+import soundfile as sf
+import numpy as np
 
 app = Flask(__name__)
 app.secret_key = 'KeySoUniquYouWontGuessIt'
@@ -210,8 +212,13 @@ def video_transcription(video_URL):
     return result["text"]
 
 def audio_transcription(audio_file):
+    with audio_file as f:
+        audio_data, sample_rate = sf.read(f)
 
-    result = whisper_model.transcribe(audio_file)
+    if not isinstance(audio_data, np.ndarray):
+        audio_data = np.array(audio_data)
+    
+    result = whisper_model.transcribe(audio_data, sample_rate)
     # Delete audio file after transcription
     # os.remove(audio_file)
     return result["text"]
