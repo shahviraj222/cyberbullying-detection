@@ -1,0 +1,6 @@
+age
+ethnicity
+gender
+not_cyberbullying
+other_cyberbullying
+religion
